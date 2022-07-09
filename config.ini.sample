@@ -1,0 +1,7 @@
+[server]
+instanceUrl = https://my.instance
+generateFeatured = /home/myuser/myinstancedata/featured.html
+
+[featured]
+https://my.instance/@myuser/statuses/XXXXXXXXXXXXXXXXXXXXXXXXXX
+https://my.instance/@myuser/statuses/YYYYYYYYYYYYYYYYYYYYYYYYYY
