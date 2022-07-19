@@ -32,31 +32,47 @@ if ( file_exists( $fp ) && is_readable( $fp ) ) {
 				$tdoc->loadHTML( $template, LIBXML_NOWARNING );
 				libxml_clear_errors();
 
+                                $main = $tdoc->getElementsByTagName( "main" );
+                                if ( $main instanceof DOMNodeList && $main->length === 1 ) {
+                                        // Clear it.
+                                        $main[ 0 ]->nodeValue = "";
+                                        $main[ 0 ]->textContent = "";
 
-				$main = $tdoc->getElementsByTagName( "main" );
-				if ( $main instanceof DOMNodeList && $main->length === 1 ) {
-					// Clear it.
-					$main[ 0 ]->nodeValue = "";
-					$main[ 0 ]->textContent = "";
+                                        if ( isset( $ini[ "featured" ] ) && isset( $ini[ "featured" ][ "post" ] ) && is_array( $ini[ "featured" ][ "post" ] ) ) {
+                                                $link = $tdoc->getElementsByTagName( "link" );
+                                                if ( $link instanceof DOMNodeList && $link->length > 0 ) {
+                                                        for ( $i = $link->length; $i > 0; $i-- ) {
+                                                                $link[ $i - 1 ]->parentNode->removeChild( $link[ $i - 1 ] );
+                                                        }
+                                                }
 
-					if ( isset( $ini[ "featured" ] ) && isset( $ini[ "featured" ][ "post" ] ) && is_array( $ini[ "featured" ][ "post" ] ) ) {
-						foreach ( $ini[ "featured" ][ "post" ] as $postUrl ) {
-							$postPage = @file_get_contents( $postUrl, false, $context );
-							$pdoc = new DOMDocument();
-							$pdoc->loadHTML( $postPage, LIBXML_NOWARNING );
-							libxml_clear_errors();
+                                                foreach ( $ini[ "featured" ][ "post" ] as $postUrl ) {
+                                                        $postPage = @file_get_contents( $postUrl, false, $context );
+                                                        $pdoc = new DOMDocument();
+                                                        $pdoc->loadHTML( $postPage, LIBXML_NOWARNING );
+                                                        libxml_clear_errors();
 
-							$xp = new DomXPath( $pdoc );
-							$postNode = $xp->query( "//*[contains(@class,'toot expanded')]" );
-							if ( $postNode instanceof DOMNodeList && $postNode->length === 1 ) {
-								$main[ 0 ]->appendChild( $tdoc->importNode( $postNode[ 0 ], true ) );
-							}
+                                                        $xp = new DomXPath( $pdoc );
+                                                        $postNode = $xp->query( "//*[contains(@class,'toot expanded')]" );
+                                                        if ( $postNode instanceof DOMNodeList && $postNode->length === 1 ) {
+                                                                $main[ 0 ]->appendChild( $tdoc->importNode( $postNode[ 0 ], true ) );
+                                                        }
+                                                }
 
-							unset($xp);
-							unset($pdoc);
-						}
-					}
-				}
+                                                if ( isset( $pdoc ) && $pdoc instanceof DOMDocument ) {
+                                                        $link = $pdoc->getElementsByTagName( "link" );
+                                                        $title = $tdoc->getElementsByTagName( "title" );
+
+                                                        if (    $link instanceof DOMNodeList && $link->length > 0 &&
+                                                                $title instanceof DOMNodeList && $title->length === 1 )
+                                                        {
+                                                                foreach ( $link as $linkel ) {
+                                                                        $title[ 0 ]->parentNode->insertBefore( $tdoc->importNode( $linkel, true ), $title[ 0 ] );
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
 
 				file_put_contents( $ini[ "server" ][ "generateFeatured" ], $tdoc->saveHTML() );
 			}
