@@ -1,6 +1,8 @@
 [server]
 instanceUrl = https://my.instance
+sqliteDb = /gotosocial/sqlite.db
 generateFeatured = /home/myuser/myinstancedata/featured.html
+generateDirectory = /home/myuser/myinstancedata/directory.html
 
 [featured]
 https://my.instance/@myuser/statuses/XXXXXXXXXXXXXXXXXXXXXXXXXX
