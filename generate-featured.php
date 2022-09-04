@@ -74,6 +74,11 @@ if ( file_exists( $fp ) && is_readable( $fp ) ) {
                                         }
                                 }
 
+                                $body = $tdoc->getElementsByTagName( "body" )->item(0);
+                                $fescript = $tdoc->createElement( "script" );
+                                $fescript->setAttribute( "src", "/assets/dist/frontend.js" );
+                                $body->appendChild( $fescript );
+				
 				file_put_contents( $ini[ "server" ][ "generateFeatured" ], $tdoc->saveHTML() );
 			}
 		}
