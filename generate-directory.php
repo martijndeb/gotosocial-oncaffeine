@@ -72,6 +72,8 @@ if ( file_exists( $fp ) && is_readable( $fp ) ) {
                                                         $profileNode = $xp->query( "//*[contains(@class,'profile')]" );
                                                         if ( $profileNode instanceof DOMNodeList && $profileNode->length === 1 ) {
                                                                 $main[ 0 ]->appendChild( $tdoc->importNode( $profileNode[ 0 ], true ) );
+                                                                $brnode = $tdoc->createElement( "br" );
+                                                                $main[ 0 ]->appendChild( $brnode );
                                                         }
                                                 }
 
