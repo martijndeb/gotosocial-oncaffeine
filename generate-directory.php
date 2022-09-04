@@ -21,7 +21,7 @@ if ( file_exists( $fp ) && is_readable( $fp ) ) {
 				exit;
 			} else {
 				$db = new SQLite3( $ini[ "server" ][ "sqliteDb" ] );
-				$sql = "SELECT a.url FROM users AS u INNER JOIN accounts AS a ON u.account_id = a.id WHERE u.disabled = false AND u.approved = true ORDER BY a.display_name ASC";
+				$sql = "SELECT a.url FROM users AS u INNER JOIN accounts AS a ON u.account_id = a.id WHERE u.disabled = false AND u.approved = true ORDER BY (SELECT COUNT(id) FROM statuses WHERE account_id = a.id) DESC, a.display_name ASC";
 				$q = $db->query( $sql );
 				while ( $res = $q->fetchArray() ) {
 					$users[] = $res;
